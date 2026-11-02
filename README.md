@@ -45,7 +45,7 @@ Any other client: run `uvx rrk-mcp` as a stdio MCP server (`{"command": "uvx", "
 | `rk_search_laws` | Search laws by title words, full-text words, law group, approver, special issue number or Jalali gazette date range |
 | `rk_law_filters` | List the law groups (categories) and approving authorities to filter by |
 | `rk_law_text` | Read one law's approver, gazette number and date, and full text (long texts in parts) |
-| `rk_exchange_offices` | List the licensed currency exchange offices (location, phone, address) by province and city |
+| `rk_exchange_offices` | List the licensed currency exchange offices (location, phone, address; a field the portal leaves empty is null) by province and city |
 
 All 5 tools are annotated `readOnlyHint: true`.
 
