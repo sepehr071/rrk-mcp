@@ -144,7 +144,8 @@ async def test_unknown_or_ambiguous_group_is_a_tool_error(client, portal):
 async def test_exchange_offices(client, portal):
     r = (await client.call_tool("rk_exchange_offices", {"province": "اردبیل", "page": 2})).structured_content
     assert r["total"] == 441 and r["more"] is True and r["offices"][0]["city"] == "سلفچگان"
-    assert {"province", "city", "phone", "postal_code", "address"} <= set(r["offices"][0])
+    assert {"province", "city", "address"} <= set(r["offices"][0])
+    assert all(v is None or v.strip("-") for o in r["offices"] for v in o.values())
     f = portal.calls[-1]
     assert f["p_widget_action"] == "paginate" and f["p_pg_min_row"] == "51" and items(f)["P176_PROVINCE"] == "اردبیل"
 

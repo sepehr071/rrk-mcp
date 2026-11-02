@@ -53,6 +53,12 @@ async def _session(force: bool = False) -> dict[str, Any]:
         return dict(_state)
 
 
+def _val(s: str) -> str | None:
+    """A cell's text, or None when the portal shows nothing or a dash."""
+    t = _strip(s)
+    return t if t.strip("-") else None
+
+
 def _parse(out: str, page: int) -> dict[str, Any]:
     if "t-Report" not in out:
         raise _SessionLost("rrk.ir returned no exchange list (session problem). Try again in a minute.")
@@ -65,10 +71,10 @@ def _parse(out: str, page: int) -> dict[str, Any]:
             {
                 "province": _strip(cells.get("STATENAME", "")),
                 "city": _strip(cells.get("CITYNAME", "")),
-                "district": _strip(cells.get("REGION", "")),
-                "phone": _strip(cells.get("PHONENUMBER", "")),
-                "postal_code": _strip(cells.get("ZIPCODE", "")),
-                "address": _strip(cells.get("ADDRESS", "")),
+                "district": _val(cells.get("REGION", "")),
+                "phone": _val(cells.get("PHONENUMBER", "")),
+                "postal_code": _val(cells.get("ZIPCODE", "")),
+                "address": _val(cells.get("ADDRESS", "")),
             }
         )
     return {"total": total, "page": page, "more": page * PER_PAGE < total, "offices": offices}

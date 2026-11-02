@@ -44,10 +44,15 @@ mcp = MCPServer(
 )
 
 
+KEEP = {"district", "phone", "postal_code", "address"}  # always sent, even when null or empty
+
+
 def _slim(v, top=False):
-    """Drop null and empty values below the top level (a missing key means none/unknown)."""
+    """Drop null and empty values below the top level (a missing key means none/unknown), except KEEP keys."""
     if isinstance(v, dict):
-        return {k: _slim(x) for k, x in v.items() if top or x is not None and x != "" and x != [] and x != {}}
+        return {
+            k: _slim(x) for k, x in v.items() if top or k in KEEP or x is not None and x != "" and x != [] and x != {}
+        }
     if isinstance(v, list):
         return [_slim(x) for x in v]
     return v
