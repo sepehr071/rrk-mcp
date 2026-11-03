@@ -107,6 +107,8 @@ async def rk_exchange_offices(
 
 async def _list(province: str, city: str, page: int, force: bool) -> dict[str, Any]:
     s = await _session(force)
+    if not s["provinces"]:
+        raise ApiError("rrk.ir returned no province list (blocked or changed page). Try again or set RRK_MCP_PROXY.")
     if province and province not in s["provinces"]:
         raise ApiError(f"Unknown province {province!r}. Valid: " + ", ".join(s["provinces"]))
     if city and not province:

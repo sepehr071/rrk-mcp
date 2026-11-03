@@ -209,6 +209,8 @@ def _parse(out: str, page: int) -> dict[str, Any]:
                 "special_no": c[5],
             }
         )
+    if not laws and "a-IRR-noDataMsg" not in out:  # a real empty result says «داده ای یافت نشد»
+        raise ApiError("rrk.ir returned no law list (blocked or changed page). Try again or set RRK_MCP_PROXY.")
     for x in laws:
         x["title"] = " ".join(x["title"].split())[:MAX_TITLE]
     return {"total": total, "page": page, "more": page * PER_PAGE < total, "laws": laws}
