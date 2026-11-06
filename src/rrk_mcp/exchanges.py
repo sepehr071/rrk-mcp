@@ -85,18 +85,14 @@ _PERSIAN = str.maketrans({"ي": "ی", "ك": "ک", "ى": "ی"})  # the province/c
 
 @tool("Licensed exchange offices")
 async def rk_exchange_offices(
-    province: Annotated[str, Field(description="Province name as on the site, e.g. 'تهران', 'قم'. Empty = all.")] = "",
-    city: Annotated[
-        str, Field(description="City name as on the site, e.g. 'قم', 'سلفچگان'. Empty = whole province.")
-    ] = "",
-    page: Annotated[int, Field(description="Page number, 50 offices per page.", ge=1, le=200)] = 1,
+    province: Annotated[str, Field(description="Province name, e.g. 'تهران'. Empty = all.")] = "",
+    city: Annotated[str, Field(description="City name, e.g. 'قم'. Empty = whole province.")] = "",
+    page: Annotated[int, Field(description="Page number, 50 per page.", ge=1, le=200)] = 1,
 ) -> dict[str, Any]:
     """List the licensed currency exchange offices (صرافی مجاز) the Central Bank published in the Official Gazette (rrk.ir).
 
-    Use to see where licensed exchange offices are or to find one's address and phone. Filter by `province` and
-    `city` (Persian names; an unknown province is an error that lists the valid ones). Returns `total`, `more`
-    and up to 50 `offices` with province, city, district, phone, postal_code and address. Office names are not
-    published, only the location.
+    Filter by `province` and `city` (an unknown province is an error that lists the valid ones). Returns `total`,
+    `more` and up to 50 `offices` (location, phone, address; no names are published).
     """
     province, city = province.translate(_PERSIAN).strip(), city.translate(_PERSIAN).strip()
     try:

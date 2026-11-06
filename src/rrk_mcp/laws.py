@@ -269,35 +269,28 @@ async def _locate(code: str) -> None:
 
 @tool("Search laws and regulations")
 async def rk_search_laws(
-    title: Annotated[
-        str, Field(description="Words in the law's title, Persian (e.g. 'ماليات', 'ديوان عدالت اداري').")
-    ] = "",
-    text: Annotated[str, Field(description="Words inside the law's full text (slower than title search).")] = "",
-    special_no: Annotated[str, Field(description="The special issue number (شماره ویژه), e.g. '2301'.")] = "",
+    title: Annotated[str, Field(description="Words in the title, Persian (e.g. 'ماليات').")] = "",
+    text: Annotated[str, Field(description="Words in the full text (slower than title).")] = "",
+    special_no: Annotated[str, Field(description="Special issue number (شماره ویژه), e.g. '2301'.")] = "",
     from_date: Annotated[str, Field(description="Gazette date from, Jalali YYYY/MM/DD, e.g. '1405/08/01'.")] = "",
-    to_date: Annotated[str, Field(description="Gazette date to, Jalali YYYY/MM/DD, inclusive.")] = "",
+    to_date: Annotated[str, Field(description="Gazette date to, Jalali YYYY/MM/DD.")] = "",
     group: Annotated[
         str,
         Field(
-            description="Law group (category) id or name words from rk_law_filters, e.g. 'آرای هیات عمومی دیوان "
-            "عدالت اداری' or '3'. A top-level group includes its sub-groups; id 64 is the Majlis debates."
+            description="Group id or name words from rk_law_filters, e.g. 'دیوان عدالت' or '3'. "
+            "A top-level group includes its sub-groups."
         ),
     ] = "",
     approver: Annotated[
         str,
-        Field(
-            description="Approving authority (مرجع تصویب) code or name words from rk_law_filters, e.g. 'دبیر هیات دولت'."
-        ),
+        Field(description="Approver (مرجع تصویب) code or name words from rk_law_filters."),
     ] = "",
-    page: Annotated[int, Field(description="Page number, 20 laws per page, newest gazette first.", ge=1, le=500)] = 1,
+    page: Annotated[int, Field(description="Page number, 20 per page.", ge=1, le=500)] = 1,
 ) -> dict[str, Any]:
     """Search the Official Gazette's laws and regulations database (rrk.ir) by title, full text, group, approver, special number or gazette date.
 
-    Use to find a law, regulation, Court of Administrative Justice ruling or Majlis approval. All filters are
-    optional and combined; with none it lists the newest. Gazette dates are Jalali (1405 = 2026). `group` and
-    `approver` take an id or name words (see rk_law_filters). Returns `total`, `more` and up to 20 `laws` with
-    `code`; pass a code to rk_law_text to read the text. This covers laws only: company registration notices
-    (founding, capital, board, liquidation) are not openly searchable on rrk.ir.
+    Filters are optional and combined; none lists the newest. Returns `total`, `more` and up to 20 `laws` with
+    `code`; pass a code to rk_law_text. Laws only: company registration notices are not searchable on rrk.ir.
     """
     gid = aid = ""
     if group.strip():
@@ -322,13 +315,12 @@ async def rk_search_laws(
 
 @tool("Law groups and approvers")
 async def rk_law_filters(
-    query: Annotated[str, Field(description="Name words to narrow the lists, e.g. 'دیوان' or 'مالیات'.")] = "",
+    query: Annotated[str, Field(description="Name words to narrow the lists, e.g. 'دیوان'.")] = "",
 ) -> dict[str, Any]:
     """List the law groups (categories) and approving authorities that rk_search_laws can filter by.
 
-    Use first when the user asks for one kind of document (court rulings, cabinet decrees, regulations, Majlis
-    debates) or one issuing body. Pass a group `id` or an approver `code` (or their name words) to
-    rk_search_laws as `group` or `approver`. Groups are two levels deep: `parent` is set on sub-groups.
+    Use first for one kind of document (court rulings, decrees, Majlis debates) or one issuing body. Pass a group
+    `id` or approver `code` to rk_search_laws. `parent` is set on sub-groups.
     """
     q = _text(query)
     groups = [g for g in (await _session())["groups"] if q in _text(f"{g.get('parent', '')} {g['name']}")]
@@ -337,27 +329,25 @@ async def rk_law_filters(
 
 @tool("Latest laws and regulations")
 async def rk_latest_laws(
-    page: Annotated[int, Field(description="Page number, 20 laws per page.", ge=1, le=500)] = 1,
+    page: Annotated[int, Field(description="Page number, 20 per page.", ge=1, le=500)] = 1,
 ) -> dict[str, Any]:
     """List the newest laws, rulings and regulations published in the Official Gazette (rrk.ir), newest gazette first.
 
-    Use for "what was published in the gazette lately". Each law has a `code`; pass it to rk_law_text for the
-    full text. To narrow by topic or date use rk_search_laws.
+    Each law has a `code` for rk_law_text. To narrow by topic or date use rk_search_laws.
     """
     return await rk_search_laws(page=page)
 
 
 @tool("Read a law's text")
 async def rk_law_text(
-    code: Annotated[str, Field(description="Law code (number) from rk_search_laws or rk_latest_laws.")],
-    offset: Annotated[int, Field(description="Character to start from, to read long texts in parts.", ge=0)] = 0,
+    code: Annotated[str, Field(description="Law `code` from rk_search_laws or rk_latest_laws.")],
+    offset: Annotated[int, Field(description="Character to start from.", ge=0)] = 0,
     max_chars: Annotated[int, Field(description="Most characters to return.", ge=500, le=20000)] = 6000,
 ) -> dict[str, Any]:
     """Read the full text of one law or ruling from the Official Gazette (rrk.ir): approver, gazette number and date, body.
 
-    Use after rk_search_laws or rk_latest_laws with a law's `code`. A code that this session has not listed yet
-    is located by paging through the newest-first list (slow: 10-60 s, older laws may not be found). Long texts
-    are cut at `max_chars`; call again with `offset` = the returned `next_offset` to continue.
+    Use with a `code` from a search. An unlisted code is located by paging the list (slow, 10-60 s; old laws may
+    not be found). Long texts are cut at `max_chars`; continue with `offset` = `next_offset`.
     """
     code = code.strip()
     if not code.isdigit():
