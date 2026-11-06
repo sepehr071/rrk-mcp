@@ -1,6 +1,6 @@
 [project]
 name = "rrk-mcp"
-version = "0.1.2"
+version = "0.2.0"
 description = "Unofficial read-only MCP server for the Official Gazette of Iran (rrk.ir, روزنامه رسمی): laws, regulations and court rulings."
 readme = "README.md"
 license = "MIT"
