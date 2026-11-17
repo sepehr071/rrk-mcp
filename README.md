@@ -10,7 +10,7 @@ read the full text of a law, court ruling or regulation, and list the licensed e
 
 [![PyPI](https://img.shields.io/pypi/v/rrk-mcp?color=2563eb)](https://pypi.org/project/rrk-mcp/)
 [![Python](https://img.shields.io/pypi/pyversions/rrk-mcp)](https://pypi.org/project/rrk-mcp/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-16a34a)](https://github.com/sepehr071/rrk-mcp/blob/main/LICENSE)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm%20Noncommercial-c2410c)](https://github.com/sepehr071/rrk-mcp/blob/main/LICENSE)
 
 [For AI agents](#for-ai-agents) · [Quick start](#quick-start) · [Tools](#tools) · [Limits](#limits) · [فارسی](#فارسی)
 
@@ -73,3 +73,11 @@ uv run python -m pytest -m live -q
 ---
 
 Made by Sepehr Radmard (سپهر رادمرد) · [github.com/sepehr071](https://github.com/sepehr071) · [linkedin.com/in/sepehr-radmard](https://linkedin.com/in/sepehr-radmard)
+
+## مجوز استفاده (License)
+
+<a href="https://www.linkedin.com/in/sepehr-radmard"><img src="https://raw.githubusercontent.com/sepehr071/iran-mcp/main/assets/license-banner.png" alt="استفادهٔ شخصی و غیرتجاری رایگان است؛ برای استفادهٔ تجاری با سپهر رادمرد تماس بگیرید. Free for personal and non-commercial use; commercial use needs a license." width="100%"></a>
+
+**استفادهٔ شخصی و غیرتجاری رایگان است.** استفاده در شرکت، محصول پولی یا پروژهٔ مشتری به مجوز تجاری نیاز دارد؛ از راه [لینکدین](https://www.linkedin.com/in/sepehr-radmard) یا [گیت&zwnj;هاب](https://github.com/sepehr071) با سپهر رادمرد تماس بگیرید. متن کامل: [PolyForm Noncommercial 1.0.0](https://github.com/sepehr071/rrk-mcp/blob/main/LICENSE). نسخه&zwnj;های پیش از 0.2.1 با مجوز MIT منتشر شده&zwnj;اند و همان مجوز را دارند.
+
+Free for personal and non-commercial use under the [PolyForm Noncommercial License 1.0.0](https://github.com/sepehr071/rrk-mcp/blob/main/LICENSE). Using it in a company, a paid product or a client project needs a commercial license: contact Sepehr Radmard on [LinkedIn](https://www.linkedin.com/in/sepehr-radmard) or [GitHub](https://github.com/sepehr071). Versions before 0.2.1 were released under MIT and stay under it.
